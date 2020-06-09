@@ -1,0 +1,2 @@
+nohup ~/R-3.3.2/bin/R --slave --vanilla --args tea coffee <lpbrim_mrna.r> lpbrim_mrna.Rout
+nohup ~/R-3.3.2/bin/R --slave --vanilla --args tea coffee <lpbrim_ribo.r> lpbrim_ribo.Rout
