@@ -35,3 +35,24 @@ library(parallelDist)
 dist.euclidean <- parDist(myMat, method = "euclidean",threads=5)
 hc <- hclust(d = as.dist(dist.euclidean), method = "ave")
 save(myMat,dist.euclidean,hc,file='mrna_lpbrim_100.RData')
+
+##module partition
+minModuleSize = 30;
+dynamicMods = cutreeDynamic(dendro = hc, distM = as.matrix(dist.euclidean),
+                            deepSplit = 4,
+							cutHeight=0.9999,
+                            method = 'hybrid', pamRespectsDendro= FALSE,
+                            minClusterSize = minModuleSize); 
+dynamicColors=labels2colors(dynamicMods)
+
+pdf('tree_mrna.pdf')
+plotDendroAndColors(hc, dynamicColors, "Dynamic Tree Cut", hang = 0.03,
+                    addGuide = TRUE, guideHang = 0.05,dendroLabels=FALSE,
+                    main = " ")
+dev.off()
+
+
+df<-data.frame(colnames(myMat),dynamicMods)
+MEs = moduleEigengenes(t(alld), colors=dynamicMods)
+kMEtable = signedKME(t(alld), datME = MEs$eigengenes,corFnc = "bicor")
+save(alld,df,dynamicMods,MEs,kMEtable,file='mrna_networks.RData')
